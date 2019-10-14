@@ -8,6 +8,7 @@ import (
 	"sea_log/slaver/es"
 	"sea_log/slaver/etcd_ops"
 	"sea_log/slaver/utils"
+	"strings"
 	"time"
 	//"sync"
 	//"time"
@@ -103,7 +104,7 @@ func consume(c sarama.Consumer, om sarama.OffsetManager, p int32, info *utils.Jo
 			pom.MarkOffset(msg.Offset+1, "")
 			//es.GelasticCli.CreateSignDocument(utils.CreateIndexByType(info.Job.Topic, info.Job.IndexType), string(msg.Value), info.Job.Pipeline)
 			if len(logDatas) >= 1000 {
-				es.GelasticCli.CreateBulkDocument(utils.CreateIndexByType(info.Job.Topic, info.Job.IndexType), logDatas, info.Job.Pipeline)
+				es.GelasticCli.CreateBulkDocument(strings.ToLower(utils.CreateIndexByType(info.Job.Topic, info.Job.IndexType)), logDatas, info.Job.Pipeline)
 
 				logCount <- len(logDatas)
 				utils.SliceClear(&logDatas)
@@ -111,7 +112,7 @@ func consume(c sarama.Consumer, om sarama.OffsetManager, p int32, info *utils.Jo
 			//log.Printf("[%v] Consumed message offset %v content is %s\n", p, msg.Offset, string(msg.Value))
 		case <-t.C:
 			if len(logDatas) > 0 {
-				es.GelasticCli.CreateBulkDocument(utils.CreateIndexByType(info.Job.Topic, info.Job.IndexType), logDatas, info.Job.Pipeline)
+				es.GelasticCli.CreateBulkDocument(strings.ToLower(utils.CreateIndexByType(info.Job.Topic, info.Job.IndexType)), logDatas, info.Job.Pipeline)
 
 				logCount <- len(logDatas)
 				utils.SliceClear(&logDatas)

@@ -10,4 +10,5 @@ master/cmd/master_debug
 *.exe
 sea_log
 sea_log_master
+sea_log_slaver
 build.sh

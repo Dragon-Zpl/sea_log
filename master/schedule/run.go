@@ -27,7 +27,7 @@ func newScheduler(b balance.Balancer) *Scheduler {
 
 func InitSchedule() {
 	s := newScheduler(balance.BlanceMapping[conf.BalanceConf.Name]())
-	s.ListenJob()
+	go s.ListenJob()
 	go s.StartLogJob()
 	go s.EndLogJob()
 	go s.restartLogJob()
