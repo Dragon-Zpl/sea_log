@@ -270,6 +270,12 @@ func (this *Scheduler) CalculatingPressure() {
 			etcd_ops.GjobMgr.Kv.Put(context.Background(), conf.JobConf.JobInfo, string(infoBytes), clientv3.WithLease(leaseId))
 			logs.INFO("node info is ", nodeInfo)
 
+			// 任务数会变为0， 零时改动再做修改
+			if nodeInfo.JobCount == 0 && nodeInfo.LogCount == 0{
+				logs.INFO("重新初始化")
+				InitScheduler()
+				time.Sleep(30*time.Second)
+			}
 			counts = []int{}
 			nodeInfo = common.NodeInfo{}
 
